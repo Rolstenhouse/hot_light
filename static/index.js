@@ -5,10 +5,13 @@ function load_results(response) {
   console.log(response[0]);
   //Process variable
   var isLightOn = response[0].Location.Hotlight;
-  document.getElementById("output").innerHTML = isLightOn ? "Yes!!!" : "No :("
+  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Last hot five minutes ago"
   
   // Set Image
-  document.getElementById("light").src = isLightOn ? 'assets/hot_krispy_kreme.png' : 'assets/off_krispy_kreme.png';
+
+  var image_string = isLightOn ? 'hot_krispy_kreme.png' : 'off_krispy_kreme.png';
+
+  document.getElementById("light").src = '/static/assets/'+image_string;
 
   // Get Lat/Long of user location
   var latitude = response[0].Location.Latitude;
