@@ -1,3 +1,3 @@
 server/
-*.py
+*.pyc
 node_modules/
