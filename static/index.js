@@ -5,7 +5,7 @@ function load_results(response) {
   console.log(response[0]);
   //Process variable
   var isLightOn = response[0].Location.Hotlight;
-  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Not hot right now :/"
+  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Not hot right now :/";
   
   // Set Image
   var image_string = isLightOn ? 'hot_krispy_kreme.png' : 'off_krispy_kreme.png';
