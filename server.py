@@ -5,24 +5,12 @@ from flask import Flask, render_template, url_for, request
 import requests
 import threading
 import datetime
+import sched, time
 
 app = Flask(__name__, static_folder="./static", template_folder="./templates")
 
 hot_locations = {}
 #unique_id: count
-
-def poll(poll_stop):
-    # Poll the server
-    # Figure out later
-    requests.get('http://dev-isthekrispykremehotlighton.herokuapp.com')
-    if not poll_stop.is_set():
-        # call again in five pinutes
-        threading.Timer(60*5, poll, [poll_stop]).start()
-
-poll_stop = threading.Event()
-poll(poll_stop)
-# stop the thread when needed
-#poll_stop.set()
 
 @app.route("/")
 def index():
