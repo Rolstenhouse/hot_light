@@ -5,10 +5,9 @@ function load_results(response) {
   console.log(response[0]);
   //Process variable
   var isLightOn = response[0].Location.Hotlight;
-  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Last hot five minutes ago"
+  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Not hot right now :/"
   
   // Set Image
-
   var image_string = isLightOn ? 'hot_krispy_kreme.png' : 'off_krispy_kreme.png';
 
   document.getElementById("light").src = '/static/assets/'+image_string;
@@ -19,14 +18,19 @@ function load_results(response) {
   update_map(latitude, longitude);
 };
 
-
 function update_map(latitude, longitude) {
   // Follow format http://maps.google.com/?q=[lat],[long]
   $('#map').attr('data-url', "http://maps.google.com/?q=" + latitude + "," + longitude);
 }
 
+// Write out function to slowly and continuously poll for status
+function poll() {
+  
+}
+
 var tag = document.createElement("script");
 tag.src = 'https://services.krispykreme.com/api/locationsearchresult/?callback=load_results&responseType=Full&search=%7B%22Where%22%3A%7B%22LocationTypes%22%3A%5B%22Store%22%2C%22Commissary%22%2C%22Franchise%22%5D%2C%22OpeningDate%22%3A%7B%22ComparisonType%22%3A0%7D%7D%2C%22Take%22%3A%7B%22Min%22%3A3%2C%22DistanceRadius%22%3A100%7D%2C%22PropertyFilters%22%3A%7B%22Attributes%22%3A%5B%22FoursquareVenueId%22%2C%22OpeningType%22%5D%7D%7D&lat=29.6516344&lng=-82.32482619999996&_=1517112369718';
+
 document.getElementsByTagName("head")[0].appendChild(tag);
 
 // DOCUMENTATION
