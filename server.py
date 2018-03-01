@@ -2,16 +2,16 @@
 from __future__ import print_function # In python 2.7
 from flask import render_template, request, jsonify
 from pymongo import MongoClient
-import secrets
 import threading
 import requests
 import re
+import os
 import init
 from emails import emails
 from flask_mail import Mail, Message
 
 # URI
-client = MongoClient('mongodb://'+secrets.user+':'+secrets.password+'@ds149905.mlab.com:49905/krispykreme')
+client = MongoClient('mongodb://'+os.environ['MONGO_USER']+':'+os.environ['MONGO_PASSWORD']+'@ds149905.mlab.com:49905/krispykreme')
 db = client.krispykreme
 
 # Set python mongo connection on environment variable

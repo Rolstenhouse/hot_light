@@ -3,8 +3,6 @@ requests
 newrelic
 Flask-PyMongo
 Flask-Mail
-celery
-redis
 
 ## Production ##
 gunicorn
