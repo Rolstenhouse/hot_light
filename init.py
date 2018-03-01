@@ -1,4 +1,3 @@
-from celery import Celery
 from flask import Flask
 from flask_pymongo import PyMongo, MongoClient
 from flask_mail import Mail
