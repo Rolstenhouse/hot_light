@@ -1,16 +1,22 @@
 # server.py
 from __future__ import print_function # In python 2.7
-import sys
-from flask import Flask, render_template, url_for, request
-import requests
+from flask import render_template, request, jsonify
+from pymongo import MongoClient
+import secrets
 import threading
-import datetime
-import sched, time
+import requests
+import re
+import init
+from emails import emails
+from flask_mail import Mail, Message
 
-app = Flask(__name__, static_folder="./static", template_folder="./templates")
+# URI
+client = MongoClient('mongodb://'+secrets.user+':'+secrets.password+'@ds149905.mlab.com:49905/krispykreme')
+db = client.krispykreme
 
-hot_locations = {}
-#unique_id: count
+# Set python mongo connection on environment variable
+app = init.create_app()
+mail = Mail(app)
 
 @app.route("/")
 def index():
@@ -33,21 +39,71 @@ def api():
 
   return (resp.text, resp.status_code, resp.headers.items())
 
-@app.route("/api/last-open")
-def count():
-  # Unique ID associated with the shop
-  location_id = request.args.get('id')
+@app.route("/api/phone", methods=['POST'])
+def phone_number():
+  phone = str(request.form['phone'])
+  print(phone)
+
+  # Regex ^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})\s*$
+  match = re.search('^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$', phone)
+  if not match:
+    return jsonify({'failure':0})
+
+  # Get only decimals
+  number = re.sub(r"\D", "", phone)
+
+  # Insert data into mongoDB
+  numbers = db.phone_number
+  numbers.insert_one({'phone': phone}).inserted_id 
+
+  return jsonify({'success':1})
+
+
+def send_messages():
+  print('threaded task called')
+  with app.app_context():
+    print('gotten context')
+    numbersdb = db.phone_number
+    numbers = numbersdb.find({})
+    # Send Email
+    with mail.connect() as conn:  
+      for number in numbers:
+        phone = number['phone']
+        for email in emails:
+          msg = Message(recipients=[phone+email],
+                        body='Krispy Kreme hotlight is on!',
+                        subject='',
+                        sender='isthekrispykremehotlighton@gmail.com')
+          conn.send(msg)
+          print('attempted to send to ')
+      
+    # Delete all documents from DB
+    numbersdb.delete_many({})
   
-  # Returns datetime in whatever it came in as 
-  if location_id != None:
-    date = hot_locations[location_id]
+mail_thread = threading.Thread(target=send_messages, args=(), kwargs={})
 
-  # Do some sort of localization
+@app.route("/api/update_hotlight", methods=['POST'])
+def update_hotlight():
+  # timestamp: date
+  # hot :boolean
+  
+  timestamp = request.form['timestamp']
+  hot = request.form['hot']
 
-  return date
+  # Check hot variable
+  if hot != 'True' and hot != 'False':
+    return jsonify({'failure':0})
 
-def insertTime(id, datetime):
-  pass 
+  if hot == 'True':
+    # async call here
+    if not mail_thread.is_alive():
+      mail_thread.start()
+    
+
+  hotlight_status = db.hotlight_status
+  hotlight_status.insert_one({'timestamp': timestamp, 'hot': hot}).inserted_id
+
+  return jsonify({'success':1})
 
 if __name__ == "__main__":
   app.run(debug=True) 

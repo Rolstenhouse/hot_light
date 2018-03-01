@@ -1,16 +1,28 @@
 // Handle the calls to request and any javascript necessary.
 
+var hotlight;
+
 function load_results(response) {
   console.log(response);
   console.log(response[0]);
   //Process variable
   var isLightOn = response[0].Location.Hotlight;
-  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Not hot right now :/";
+  document.getElementById("output").innerHTML = isLightOn ? "Hot right now!" : "Not hot right now :(";
   
   // Set Image
   var image_string = isLightOn ? 'hot_krispy_kreme.png' : 'off_krispy_kreme.png';
-
   document.getElementById("light").src = '/static/assets/'+image_string;
+
+  // Set form
+  if(!isLightOn){
+    $('#form').css("display", "inline");
+  }
+  else{
+    $('#form').css("display","none");
+  }
+
+  // Update Database
+  updateHotLightDatabase(isLightOn);
 
   // Get Lat/Long of user location
   var latitude = response[0].Location.Latitude;
@@ -18,14 +30,47 @@ function load_results(response) {
   update_map(latitude, longitude);
 };
 
+function processForm(e) {
+  e.preventDefault();
+  var phone = $('#phone').val();
+
+  $.post('/api/phone', {
+    'phone': phone
+  }).done(function(response){
+    console.log(response);
+    if(response['success']){
+      alert('Successfully added phone number');
+      $('#form').css("display","none");
+    }
+    else{
+      alert('Number was not successfully added');
+    }
+  }).fail(function(){
+    alert('Number was not successfully added');
+  });
+
+  return true;
+}
+
+function updateHotLightDatabase(isLightOn) {
+  hot = isLightOn ? 'True' : 'False';
+  $.post('/api/update_hotlight', {
+    'timestamp': Date.now(),
+    'hot': hot
+  });
+}
+
+form = document.getElementById('form');
+if (form.attachEvent) {
+  form.attachEvent("submit", processForm);
+}
+else {
+  form.addEventListener("submit", processForm);
+}
+
 function update_map(latitude, longitude) {
   // Follow format http://maps.google.com/?q=[lat],[long]
   $('#map').attr('data-url', "http://maps.google.com/?q=" + latitude + "," + longitude);
-}
-
-// Write out function to slowly and continuously poll for status
-function poll() {
-  
 }
 
 var tag = document.createElement("script");

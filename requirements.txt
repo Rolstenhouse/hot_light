@@ -1,6 +1,10 @@
 flask
 requests
 newrelic
+Flask-PyMongo
+Flask-Mail
+celery
+redis
 
-## Production
+## Production ##
 gunicorn

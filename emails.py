@@ -1,0 +1,13 @@
+emails = ['@txt.att.net','@tmomail.net', '@vtext.com', '@messaging.sprintpcs.com', '@pm.sprint.com',
+'@vmobl.com',
+'@mmst5.tracfone.com',
+'@mymetropcs.com',
+'@myboostmobile.com',
+'@sms.mycricket.com',
+'@messaging.nextel.com',
+'@message.alltel.com',
+'@ptel.com',
+'@tms.suncom.com',
+'@qwestmp.com',
+'@email.uscc.net',
+]
