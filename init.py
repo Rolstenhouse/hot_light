@@ -7,8 +7,6 @@ import os
 def create_app():
   app = Flask(__name__, static_folder="./static", template_folder="./templates")
 
-  
-
   app.config['MONGO_URI'] = 'mongodb://'+os.environ['MONGO_USER']+':'+os.environ['MONGO_PASSWORD']+'@ds149905.mlab.com:49905/krispykreme'
   app.config['MONGO_CONNECT'] = False # Necessary for multi processing execution
 
