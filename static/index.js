@@ -39,14 +39,16 @@ function processForm(e) {
   }).done(function(response){
     console.log(response);
     if(response['success']){
-      alert('Successfully added phone number');
+        $('#form-failure').css("display", "none");
       $('#form').css("display","none");
+      $('#form-success').css("display", "inline");
     }
     else{
-      alert('Number was not successfully added');
+      $('#phone-parent').addClass('error');
+      $('#form-failure').css("display", "inline");
     }
   }).fail(function(){
-    alert('Number was not successfully added');
+    alert('Server error');
   });
 
   return true;

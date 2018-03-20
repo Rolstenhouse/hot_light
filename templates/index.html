@@ -35,7 +35,7 @@
 
         <form class="ui center aligned grid inverted form">
           <div class="inline fields">
-          <div class="twelve wide field">
+          <div id="phone-parent" class="ui input twelve wide field">
             <input id="phone" class="black text" type="text" name="phone" placeholder="(555)-555-5555">
           </div>
           <div class="four wide field">
@@ -43,6 +43,13 @@
           </div>
           </div>  
         </form>
+        </div>
+
+        <div id="form-success" style="display: none">
+            <p class="text white ui center aligned grid">Your phone number was successfully added! Donuts coming soon.</p>
+        </div>
+        <div id="form-failure" style="display: none">
+            <p class="text red ui center aligned grid">Invalid phone number</p>
         </div>
     </div>
     <footer>
